@@ -1,5 +1,5 @@
 // ERGA-SE — funciona offline. Para publicar uma versão nova, troque o número abaixo.
-const VERSAO = 'erga-se-v3';
+const VERSAO = 'erga-se-v4';
 const ARQUIVOS = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png'];
 
 self.addEventListener('install', e => {

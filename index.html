@@ -2175,7 +2175,8 @@ function wzCorpo(){const d=wiz.d,c={peso:Math.round(Number(d.peso)*10)/10,meta:M
   const vazio=!d.peso&&!d.meta&&!d.alt&&!d.idade;if(vazio)return{vazio:true};
   return c.peso>=30&&c.peso<=350&&c.meta>=30&&c.meta<=350&&c.alt>=100&&c.alt<=240&&c.idade>=10&&c.idade<=110?c:null}
 function wzAval(){const d=wiz.d;return{obj:d.obj,tempo:Number(d.tempo)||60,fis:true,mats:d.obj==='fisico'?[]:(d.mats.length?d.mats.slice(0,30):OBJ[d.obj].mats.slice()),flex:d.flex,abd:d.abd,km:d.km,barra:d.barra,desafio:d.desafio,ia:d.ia,local:d.local==='mil'?'mil':'acad',data:hoje()}}
-function wizR(){const ov=$('wiz');if(!wiz){ov.hidden=true;ov.innerHTML='';return}const W=wiz,st=wizSteps(),k=st[W.i],d=W.d,n=st.length;
+let wizUlt=null;
+function wizR(){const ov=$('wiz');if(!wiz){ov.hidden=true;ov.innerHTML='';wizUlt=null;return}const W=wiz,st=wizSteps(),k=st[W.i],d=W.d,n=st.length;const mesma=!ov.hidden&&wizUlt===W.modo+'|'+k,bxAnt=ov.querySelector('.wz-b'),scAnt=bxAnt?bxAnt.scrollTop:0;wizUlt=W.modo+'|'+k;
   const ch=(g,v,l,on)=>`<button class="wz-c ${on?'on':''}" data-w="opt" data-g="${g}" data-v="${esc(String(v))}" aria-pressed="${!!on}">${esc(l)}</button>`;
   const tg=(g,v,l,on)=>`<button class="wz-c ${on?'on':''}" data-w="tog" data-g="${g}" data-v="${esc(String(v))}" aria-pressed="${!!on}">${on?'✓ ':''}${esc(l)}</button>`;
   let b='';
@@ -2209,7 +2210,7 @@ function wizR(){const ov=$('wiz');if(!wiz){ov.hidden=true;ov.innerHTML='';return
   ov.innerHTML=`<div class="win" role="dialog" aria-modal="true" aria-label="Configuração do Sistema"><div class="wz-h"><span class="lbl">[SISTEMA] Configuração · ${W.i+1}/${n}</span>${W.modo!=='onb'?'<button class="btn sm gh" data-w="fechar" aria-label="Fechar">×</button>':''}</div><div class="wz-p"><i style="width:${(W.i+1)/n*100}%"></i></div>
     <div class="wz-b">${b}</div>${W.err?`<p class="warn">${esc(W.err)}</p>`:''}
     <div class="wz-f">${W.i>0?'<button class="btn gh" data-w="back">Voltar</button>':'<span></span>'}${['corpo','teste','cortar'].includes(k)?'<button class="btn sm gh" data-w="skip">Pular</button>':''}<button class="btn ${k==='fim'||k==='ens'?'gd':''}" data-w="${k==='fim'?'go':'next'}">${k==='fim'?(W.modo==='onb'?'Começar':'Salvar'):k==='ens'?'Entendido':'Próximo'}</button></div></div>`;
-  ov.hidden=false;if(S.lang==='en')trDom(ov);const bx=ov.querySelector('.wz-b');if(bx)bx.scrollTop=0}
+  if(mesma){const w=ov.querySelector('.win');if(w)w.style.animation='none'}ov.hidden=false;if(S.lang==='en')trDom(ov);const bx=ov.querySelector('.wz-b');if(bx)bx.scrollTop=mesma?scAnt:0}
 function wizFim(){const W=wiz,d=W.d,c=wzCorpo();
   if(W.modo==='corpo'){if(c&&!c.vazio){salvarCorpo(c);if(!S.treino.hist.length)S.treino.fichas=calibrar(FICHAS_DEF(),S.aval,S.corpo)}wiz=null;wizR();salvar();render();return}
   const a=wzAval(),pri=!S.aval;S.aval=a;if(c&&!c.vazio)salvarCorpo(c);
