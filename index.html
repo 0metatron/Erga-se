@@ -1592,6 +1592,7 @@ Object.assign(EN,{'Sua missão diária (já aplicada)':'Your daily quest (alread
  'Questões geradas por IA podem ter erros. Se uma resposta parecer errada, confira no seu material.':'AI-generated questions can contain mistakes. If an answer looks wrong, check your study material.','Essa matéria não tem lista pronta. O Arquiteto monta os assuntos principais para você.':"This subject has no ready-made list. The Architect will build the main topics for you.",
  'As provas precisam do Arquiteto com IA, que chega numa próxima versão do app.':'Tests use the Architect, which needs your Claude account connected.','Assunto dominado':'Topic mastered','Prova corrigida':'Test graded','Provar o que estudou: 5 questões':'Test what you studied: 5 questions','Player adicionado ao ranking':'Player added to ranking','Player atualizado':'Player updated','Código inválido':'Invalid code','Esse é o seu código':"That's your own code",'Cole o código de um amigo.':"Paste a friend's code.",'Último passo: lembretes':'Last step: reminders','Pronto':'Done','Agora não':'Not now','Depois você muda isso em Configurações.':'You can change this later in Settings.'});
 
+Object.assign(EN,{'Instalar app':'Install app','Coloque o ERGA-SE na tela inicial do celular. Abre em tela cheia e funciona sem internet.':'Put ERGA-SE on your phone home screen. It opens full screen and works offline.'});
 Object.assign(EN,{'O Arquiteto completo precisa de uma IA. Neste app você usa a sua: ChatGPT, Gemini, Claude ou outra, copiando e colando. A versão grátis de qualquer uma serve.':'The full Architect needs an AI. In this app you use your own: ChatGPT, Gemini, Claude or another, by copy and paste. The free version of any of them works.','Quer o Arquiteto completo, que conversa, cobra e analisa você? Use a opção "Usar outra IA" logo abaixo.':'Want the full Architect, who talks, pushes and analyzes you? Use the "Use another AI" option below.','1. Usar a sua IA':'1. Use your AI','2. Sem IA':'2. No AI','As provas precisam do Arquiteto com IA, que chega numa próxima versão do app.':'Tests need the AI Architect, which arrives in a future version of the app.','O ranking global chega numa próxima versão do app. Por enquanto, use o ranking com amigos.':'The global ranking arrives in a future version of the app. For now, use the friends ranking.','Instalar o ERGA-SE':'Install ERGA-SE','Instalar':'Install','Agora não':'Not now'});
 Object.assign(EN,{'Hoje':'Today','Treino':'Training','Foco':'Focus','Player':'Player','Diária':'Daily','Juramentos':'Oaths','Chefe':'Boss','Classe':'Class','Extras':'Extras','Dieta':'Diet','Corrida':'Running','Estudo':'Study','Questões':'Questions','Redação':'Essay','Evolução':'Progress','Atributos':'Attributes','Distribuir':'Assign','Perfil':'Profile','Ranking':'Ranking','Missões de hoje':'Today\'s quests','Penalidade':'Penalty','Treino do dia':'Today\'s workout','↻ Diária':'↻ Daily','Obrigatória':'Required','↻ Todo dia':'↻ Every day','⊘ Abstinência':'⊘ Abstinence','◆ Avulsa':'◆ Custom','XP hoje':'XP today','ofensiva':'streak','XP total':'Total XP','Treino de hoje':'Today\'s workout','descanso':'rest'});
 const EN_U={rep:'reps',km:'km',min:'min','questões':'questions'},EN_ATTR={FOR:'STR',VIT:'VIT',AGI:'AGI',INT:'INT',PER:'PER'};
@@ -2008,6 +2009,7 @@ function vConfig(){const sec=(ic,t,inner,cls)=>`<section class="win ${cls||''}">
   h+=sec('♪','Som',`<div class="cfg-g">${tog('som-set','Efeitos sonoros','Notificações, digitação e alertas',S.som)}
     <div class="cfg-r"><span>Abertura<small>Rever a tela de conexão com trilha</small></span><button class="btn sm gh" data-act="rever">Rever</button></div></div>`);
   h+=vLembretes();
+  if(!(window.ergaInstalado&&window.ergaInstalado()))h+=sec('⬇','Instalar app',`<div class="cfg-g"><p class="hint" style="margin:0">Coloque o ERGA-SE na tela inicial do celular. Abre em tela cheia e funciona sem internet.</p><div class="row"><button class="btn sm" data-act="pwa-inst">Instalar app</button></div></div>`);
   h+=sec('⇅','Dados e backup',`<div class="cfg-g"><p class="hint" style="margin:0">${ref?'Seu progresso é salvo na sua conta. Se trocar de celular, ele continua lá.':'Seu progresso fica salvo neste celular. Exporte um backup para não perder nada.'}</p>
     <div class="row"><button class="btn sm" data-act="exp-arq">Exportar progresso</button><button class="btn sm gh" data-act="imp-arq">Importar arquivo</button><input type="file" id="imp-file" accept=".json,application/json" hidden></div>
     <div class="row"><button class="btn sm gh" data-act="exp">Copiar backup</button><button class="btn sm gh" data-act="imp-abrir">Colar backup</button></div>
@@ -2963,7 +2965,7 @@ function incrementar(q,id,d){const it=(q==='p'?itensPenal():S.daily.itens).find(
   if(q!=='p'){if(!S.daily.hora)S.daily.hora={};if(box[id]>=a){if(!S.daily.hora[id])S.daily.hora[id]=Date.now()}else delete S.daily.hora[id]}
   if(q==='p')checarPenal();else checarDiaria()}
 document.addEventListener('click',e=>{
-  const tab=e.target.closest('[data-tab]');if(tab){e.preventDefault();if(aba!==tab.dataset.tab)entraAba=true;aba=tab.dataset.tab;try{history.replaceState(null,'','#'+aba)}catch(_){location.hash=aba}render();window.scrollTo(0,0);return}
+  const tab=e.target.closest('[data-tab]');if(tab){e.preventDefault();if(aba!==tab.dataset.tab&&grupoDe(aba)!==grupoDe(tab.dataset.tab))entraAba=true;aba=tab.dataset.tab;try{history.replaceState(null,'','#'+aba)}catch(_){location.hash=aba}render();window.scrollTo(0,0);return}
   const b=e.target.closest('[data-act]');if(!b||b.closest('#ntf')||b.closest('#awk'))return;if(b.closest('summary'))e.preventDefault();
   const A=b.dataset.act,k=b.dataset.k,id=b.dataset.id;
   switch(A){
@@ -3055,6 +3057,7 @@ document.addEventListener('click',e=>{
   case 'meta-ed':metaEdit=true;render();break;
   case 'meta-salvar':{const v=($('meta-vida').value||'').trim();if(!v){$('meta-vida').focus();return}mudar(()=>{const nova=!S.metaVida;S.metaVida=v.slice(0,140);metaEdit=false;notificar('info','Grande meta registrada',['['+S.metaVida+']'].concat(nova?['O Arquiteto pode transformar isso em missões.']:[]))});break}
   case 'meta-arq':aba='arquiteto';render();window.scrollTo(0,0);setTimeout(()=>{const t=$('arq-meta');if(t){t.value=S.metaVida;t.focus()}},50);break;
+  case 'pwa-inst':window.ergaInstall&&window.ergaInstall();break;
   case 'exp-arq':exportarArquivo();break;
   case 'imp-arq':{const f=$('imp-file');if(f)f.click();break}
   case 'rever':portao();break;
@@ -3268,20 +3271,77 @@ render();iniciarDespertar();
 
 <script>
 (function(){
- if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}
+ var ua=navigator.userAgent||'';
+ var isIOS=/iPhone|iPad|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+ var isAndroid=/Android/i.test(ua);
+ var inApp=/Instagram|FBAN|FBAV|FB_IAB|FBIOS|Messenger|TikTok|musical_ly|BytedanceWebview|Snapchat|Twitter|LinkedInApp|Line\//i.test(ua)||(isAndroid&&/; wv\)/.test(ua));
+ var samsung=/SamsungBrowser/i.test(ua);
+ var mobile=isIOS||isAndroid;
+ var standalone=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;
  var dp=null;
- addEventListener('beforeinstallprompt',function(e){e.preventDefault();dp=e;
-  try{if(localStorage.getItem('sj-inst-no'))return}catch(_){}
-  if(document.getElementById('pwa-inst'))return;
-  var en=(function(){try{return JSON.parse(localStorage.getItem('sistema-jogador-v1')||'{}').lang==='en'}catch(_){return false}})();
-  var b=document.createElement('div');b.id='pwa-inst';
-  b.setAttribute('style','position:fixed;left:12px;right:12px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:99999;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;background:#0b1224;border:1px solid #3aa0ff;box-shadow:0 0 24px rgba(58,160,255,.35);color:#e2f5ff;font:500 14px Barlow,system-ui,sans-serif');
-  b.innerHTML='<img src="icon-192.png" alt="" width="36" height="36" style="border-radius:8px"><span style="flex:1">'+(en?'Install ERGA-SE':'Instalar o ERGA-SE')+'</span><button id="pwa-no" style="background:none;border:0;color:#8fb3d1;font:inherit;padding:8px">'+(en?'Not now':'Agora não')+'</button><button id="pwa-ok" style="background:#3aa0ff;border:0;color:#04101f;font:600 14px inherit;padding:8px 14px;border-radius:8px">'+(en?'Install':'Instalar')+'</button>';
+ function en(){try{return JSON.parse(localStorage.getItem('sistema-jogador-v1')||'{}').lang==='en'}catch(_){return false}}
+ function T(pt,e){return en()?e:pt}
+ window.ergaInstalado=function(){return standalone};
+ if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}
+ addEventListener('beforeinstallprompt',function(e){e.preventDefault();dp=e;var o=document.getElementById('pwa-ok');if(o)o.textContent=T('Instalar','Install')});
+ addEventListener('appinstalled',function(){dp=null;fechar();var b=document.getElementById('pwa-inst');b&&b.remove()});
+ function dispensado(){try{var t=+localStorage.getItem('sj-inst-no')||0;return Date.now()-t<3*864e5}catch(_){return false}}
+ var CSSB='position:fixed;left:12px;right:12px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:99999;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;background:#0b1224;border:1px solid #3aa0ff;box-shadow:0 0 24px rgba(58,160,255,.35);color:#e2f5ff;font:500 14px Barlow,system-ui,sans-serif';
+ function banner(){
+  if(standalone||dispensado()||document.getElementById('pwa-inst'))return;
+  var b=document.createElement('div');b.id='pwa-inst';b.setAttribute('style',CSSB);
+  var txt=inApp?T('Instale o app pelo navegador','Install the app from your browser'):T('Instalar o ERGA-SE','Install ERGA-SE');
+  var bt=inApp?T('Como abrir','How'):(dp?T('Instalar','Install'):T('Como instalar','How to install'));
+  b.innerHTML='<img src="icon-192.png" alt="" width="36" height="36" style="border-radius:8px;flex:none"><span style="flex:1;line-height:1.25">'+txt+'</span><button id="pwa-no" style="background:none;border:0;color:#8fb3d1;font:inherit;font-size:13px;padding:8px 2px;white-space:nowrap">'+T('Agora não','Not now')+'</button><button id="pwa-ok" style="background:#3aa0ff;border:0;color:#04101f;font:600 14px Barlow,system-ui,sans-serif;padding:8px 12px;border-radius:8px;white-space:nowrap">'+bt+'</button>';
   document.body.appendChild(b);
-  document.getElementById('pwa-ok').onclick=function(){b.remove();dp&&dp.prompt();dp=null};
-  document.getElementById('pwa-no').onclick=function(){b.remove();try{localStorage.setItem('sj-inst-no','1')}catch(_){}};
- });
- addEventListener('appinstalled',function(){var b=document.getElementById('pwa-inst');b&&b.remove()});
+  document.getElementById('pwa-ok').onclick=function(){window.ergaInstall()};
+  document.getElementById('pwa-no').onclick=function(){b.remove();try{localStorage.setItem('sj-inst-no',String(Date.now()))}catch(_){}};
+ }
+ window.ergaInstall=function(){
+  if(dp&&!inApp){var e=dp;dp=null;e.prompt();var b=document.getElementById('pwa-inst');b&&b.remove();return}
+  guia();
+ };
+ function fechar(){var g=document.getElementById('pwa-guia');g&&g.remove()}
+ function guia(){
+  fechar();
+  var link=location.href.split('#')[0];
+  var passos,titulo,extra='',nota='';
+  if(inApp&&isAndroid){
+   titulo=T('Você está dentro de outro app (Instagram, WhatsApp…)','You are inside another app (Instagram, WhatsApp…)');
+   var intent='intent://'+location.host+location.pathname+location.search+'#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url='+encodeURIComponent(link)+';end';
+   extra='<a href="'+intent+'" style="display:block;text-align:center;background:#3aa0ff;color:#04101f;font-weight:600;padding:12px;border-radius:10px;text-decoration:none;margin:4px 0 14px">'+T('Abrir no Chrome','Open in Chrome')+'</a>';
+   passos=[T('Toque no botão acima. Se não abrir, toque nos <b>⋮</b> no canto de cima e escolha <b>Abrir no Chrome</b> (ou "Abrir no navegador").','Tap the button above. If it does not open, tap <b>⋮</b> at the top and choose <b>Open in Chrome</b>.'),T('No Chrome, toque em <b>Instalar</b> no aviso de baixo, ou nos <b>⋮</b> → <b>Instalar app</b>.','In Chrome, tap <b>Install</b> on the bottom notice, or <b>⋮</b> → <b>Install app</b>.')];
+  }else if(inApp&&isIOS){
+   titulo=T('Você está dentro de outro app (Instagram, WhatsApp…)','You are inside another app (Instagram, WhatsApp…)');
+   passos=[T('Toque nos <b>···</b> no canto de cima e escolha <b>Abrir no navegador externo</b>.','Tap <b>···</b> at the top and choose <b>Open in external browser</b>.'),T('No Safari, toque em <b>Compartilhar</b> (quadrado com a seta para cima).','In Safari, tap <b>Share</b> (square with an up arrow).'),T('Escolha <b>Adicionar à Tela de Início</b> e toque em <b>Adicionar</b>.','Choose <b>Add to Home Screen</b> and tap <b>Add</b>.')];
+  }else if(isIOS){
+   titulo=T('Instalar no iPhone','Install on iPhone');
+   passos=[T('Toque em <b>Compartilhar</b> (quadrado com a seta para cima), na barra do navegador.','Tap <b>Share</b> (square with an up arrow) in the browser bar.'),T('Role e escolha <b>Adicionar à Tela de Início</b>.','Scroll and choose <b>Add to Home Screen</b>.'),T('Toque em <b>Adicionar</b>. O ícone aparece na tela inicial.','Tap <b>Add</b>. The icon appears on your home screen.')];
+   nota='<p style="margin:0 0 12px;color:#8fb3d1;font-size:13px">'+T('Não achou a opção? Abra este link no <b>Safari</b>.','Cannot find it? Open this link in <b>Safari</b>.')+'</p>';
+  }else if(samsung){
+   titulo=T('Instalar no Samsung Internet','Install on Samsung Internet');
+   passos=[T('Toque no menu <b>☰</b>, na barra de baixo.','Tap the <b>☰</b> menu at the bottom.'),T('Escolha <b>Adicionar página a</b> → <b>Tela inicial</b>.','Choose <b>Add page to</b> → <b>Home screen</b>.')];
+  }else if(isAndroid){
+   titulo=T('Instalar no Android','Install on Android');
+   passos=[T('Toque nos <b>⋮</b>, no canto de cima.','Tap <b>⋮</b> at the top.'),T('Escolha <b>Instalar app</b> ou <b>Adicionar à tela inicial</b>. Abriu pelo WhatsApp e só aparece <b>Abrir no Chrome</b>? Toque nela primeiro e depois repita.','Choose <b>Install app</b> or <b>Add to home screen</b>. Opened from WhatsApp and only see <b>Open in Chrome</b>? Tap it first, then repeat.'),T('Confirme em <b>Instalar</b>. O ícone aparece na tela inicial.','Confirm with <b>Install</b>. The icon appears on your home screen.')];
+   nota='<p style="margin:0 0 12px;color:#8fb3d1;font-size:13px">'+T('Não deu? Copie o link abaixo e cole no <b>Chrome</b>.','Did not work? Copy the link below and paste it in <b>Chrome</b>.')+'</p>';
+  }else{
+   titulo=T('Instalar o ERGA-SE','Install ERGA-SE');
+   passos=[T('No celular, abra <b>'+location.host+location.pathname+'</b>.','On your phone, open <b>'+location.host+location.pathname+'</b>.'),T('No computador (Chrome ou Edge), clique no ícone de instalar na barra de endereço.','On a computer (Chrome or Edge), click the install icon in the address bar.')];
+  }
+  var g=document.createElement('div');g.id='pwa-guia';
+  g.setAttribute('style','position:fixed;inset:0;z-index:100000;background:rgba(0,0,0,.7);display:flex;align-items:flex-end;justify-content:center;padding:12px;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));font:500 15px/1.45 Barlow,system-ui,sans-serif;color:#e2f5ff');
+  g.innerHTML='<div style="width:100%;max-width:440px;background:#0b1224;border:1px solid #3aa0ff;border-radius:16px;padding:18px;box-shadow:0 0 30px rgba(58,160,255,.35)">'
+   +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><img src="icon-192.png" alt="" width="40" height="40" style="border-radius:9px"><b style="font-size:17px;flex:1">'+titulo+'</b><button id="pwa-x" aria-label="Fechar" style="background:none;border:0;color:#8fb3d1;font-size:22px;padding:4px 8px">×</button></div>'
+   +extra+'<ol style="margin:0 0 14px;padding-left:22px">'+passos.map(function(p){return '<li style="margin-bottom:8px">'+p+'</li>'}).join('')+'</ol>'+nota
+   +'<button id="pwa-cp" style="width:100%;background:none;border:1px solid #3aa0ff;color:#e2f5ff;font:600 14px Barlow,system-ui,sans-serif;padding:10px;border-radius:10px">'+T('Copiar link do app','Copy app link')+'</button></div>';
+  document.body.appendChild(g);
+  g.onclick=function(e){if(e.target===g)fechar()};
+  document.getElementById('pwa-x').onclick=fechar;
+  document.getElementById('pwa-cp').onclick=function(){var bt=this;function ok(){bt.textContent=T('Link copiado ✓','Link copied ✓')}
+   if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(link).then(ok,function(){prompt('',link)})}else{prompt('',link)}};
+ }
+ if(!standalone)setTimeout(banner,inApp?1500:(mobile?6000:9000));
 })();
 </script>
 </body></html>
